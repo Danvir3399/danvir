@@ -1,0 +1,7 @@
+{
+  "name": "DANVIR Artist Landing Page",
+  "description": "A minimalist, dark-themed landing page for electronic music artist DANVIR, featuring an integrated audio player, release showcase, and social links.",
+  "requestFramePermissions": [
+    "microphone"
+  ]
+}
