@@ -279,14 +279,23 @@ const AdminPanel = () => {
 
                             <div className="space-y-4">
                                 <label className="block text-[10px] uppercase tracking-widest text-zinc-500 font-bold">Platform Links</label>
-                                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
                                     <div>
                                         <label className="block text-[10px] text-zinc-600 mb-1">Spotify URL</label>
                                         <input
                                             type="text"
                                             value={editingRelease.links?.spotify || ''}
                                             onChange={e => setEditingRelease({ ...editingRelease, links: { ...editingRelease.links, spotify: e.target.value } })}
-                                            className="w-full bg-black border border-zinc-800 p-2 rounded text-white text-xs"
+                                            className="w-full bg-zinc-800/50 border border-zinc-800 p-2 rounded text-white text-[10px]"
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="block text-[10px] text-zinc-600 mb-1">Apple Music URL</label>
+                                        <input
+                                            type="text"
+                                            value={editingRelease.links?.appleMusic || ''}
+                                            onChange={e => setEditingRelease({ ...editingRelease, links: { ...editingRelease.links, appleMusic: e.target.value } })}
+                                            className="w-full bg-zinc-800/50 border border-zinc-800 p-2 rounded text-white text-[10px]"
                                         />
                                     </div>
                                     <div>
@@ -295,7 +304,7 @@ const AdminPanel = () => {
                                             type="text"
                                             value={editingRelease.links?.yandexMusic || ''}
                                             onChange={e => setEditingRelease({ ...editingRelease, links: { ...editingRelease.links, yandexMusic: e.target.value } })}
-                                            className="w-full bg-black border border-zinc-800 p-2 rounded text-white text-xs"
+                                            className="w-full bg-zinc-800/50 border border-zinc-800 p-2 rounded text-white text-[10px]"
                                         />
                                     </div>
                                     <div>
@@ -304,7 +313,16 @@ const AdminPanel = () => {
                                             type="text"
                                             value={editingRelease.links?.soundcloud || ''}
                                             onChange={e => setEditingRelease({ ...editingRelease, links: { ...editingRelease.links, soundcloud: e.target.value } })}
-                                            className="w-full bg-black border border-zinc-800 p-2 rounded text-white text-xs"
+                                            className="w-full bg-zinc-800/50 border border-zinc-800 p-2 rounded text-white text-[10px]"
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="block text-[10px] text-zinc-600 mb-1">YouTube Music URL</label>
+                                        <input
+                                            type="text"
+                                            value={editingRelease.links?.youtubeMusic || ''}
+                                            onChange={e => setEditingRelease({ ...editingRelease, links: { ...editingRelease.links, youtubeMusic: e.target.value } })}
+                                            className="w-full bg-zinc-800/50 border border-zinc-800 p-2 rounded text-white text-[10px]"
                                         />
                                     </div>
                                 </div>

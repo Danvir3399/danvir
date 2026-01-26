@@ -225,13 +225,15 @@ const LandingPage: React.FC = () => {
                 </div>
 
                 <div className="flex gap-4 mt-6 pt-4 border-t border-white/5">
-                  {release.links?.spotify && <a href={release.links.spotify} className="text-zinc-600 hover:text-white transition-colors w-4 h-4"><i className="fa-brands fa-spotify"></i></a>}
+                  {release.links?.spotify && <a href={release.links.spotify} target="_blank" rel="noreferrer" className="text-zinc-600 hover:text-white transition-colors w-4 h-4"><i className="fa-brands fa-spotify"></i></a>}
+                  {release.links?.appleMusic && <a href={release.links.appleMusic} target="_blank" rel="noreferrer" className="text-zinc-600 hover:text-white transition-colors w-4 h-4"><i className="fa-brands fa-apple"></i></a>}
                   {release.links?.yandexMusic && (
-                    <a href={release.links.yandexMusic} className="text-zinc-600 hover:text-white transition-colors w-4 h-4 flex items-center justify-center">
+                    <a href={release.links.yandexMusic} target="_blank" rel="noreferrer" className="text-zinc-600 hover:text-white transition-colors w-4 h-4 flex items-center justify-center">
                       <YandexMusicIconSVG className="w-full h-full" style={{ transform: 'translateY(20%)' }} />
                     </a>
                   )}
-                  {release.links?.soundcloud && <a href={release.links.soundcloud} className="text-zinc-600 hover:text-white transition-colors w-4 h-4"><i className="fa-brands fa-soundcloud"></i></a>}
+                  {release.links?.soundcloud && <a href={release.links.soundcloud} target="_blank" rel="noreferrer" className="text-zinc-600 hover:text-white transition-colors w-4 h-4"><i className="fa-brands fa-soundcloud"></i></a>}
+                  {release.links?.youtubeMusic && <a href={release.links.youtubeMusic} target="_blank" rel="noreferrer" className="text-zinc-600 hover:text-white transition-colors w-4 h-4"><i className="fa-brands fa-youtube"></i></a>}
                 </div>
               </div>
             </div>
