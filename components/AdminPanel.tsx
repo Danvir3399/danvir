@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../supabase';
 import { Release, Track } from '../types';
-import { LogIn, Plus, Trash2, Save, X, ExternalLink, Music, GripVertical } from 'lucide-react';
+import { LogIn, Plus, Trash2, Save, X, ExternalLink, Music, GripVertical, Upload, Loader2 } from 'lucide-react';
 
 const AdminPanel = () => {
     const [session, setSession] = useState<any>(null);
@@ -49,6 +49,26 @@ const AdminPanel = () => {
     };
 
     const handleLogout = () => supabase.auth.signOut();
+
+    const handleFileUpload = async (file: File, bucket: string, path: string) => {
+        const fileExt = file.name.split('.').pop();
+        const fileName = `${Math.random()}.${fileExt}`;
+        const filePath = `${path}/${fileName}`;
+
+        const { error: uploadError, data } = await supabase.storage
+            .from(bucket)
+            .upload(filePath, file);
+
+        if (uploadError) {
+            throw uploadError;
+        }
+
+        const { data: { publicUrl } } = supabase.storage
+            .from(bucket)
+            .getPublicUrl(filePath);
+
+        return publicUrl;
+    };
 
     const handleSaveRelease = async () => {
         setLoading(true);
@@ -248,13 +268,37 @@ const AdminPanel = () => {
                                     </select>
                                 </div>
                                 <div>
-                                    <label className="block text-[10px] uppercase tracking-widest text-zinc-500 mb-2 font-bold">Cover URL</label>
-                                    <input
-                                        type="text"
-                                        value={editingRelease.coverUrl || editingRelease.cover_url || ''}
-                                        onChange={e => setEditingRelease({ ...editingRelease, cover_url: e.target.value, coverUrl: e.target.value })}
-                                        className="w-full bg-black border border-zinc-800 p-2 rounded text-white"
-                                    />
+                                    <label className="block text-[10px] uppercase tracking-widest text-zinc-500 mb-2 font-bold">Cover URL / Upload</label>
+                                    <div className="flex gap-2">
+                                        <input
+                                            type="text"
+                                            value={editingRelease.coverUrl || editingRelease.cover_url || ''}
+                                            onChange={e => setEditingRelease({ ...editingRelease, cover_url: e.target.value, coverUrl: e.target.value })}
+                                            className="flex-1 bg-black border border-zinc-800 p-2 rounded text-white text-xs"
+                                        />
+                                        <label className="cursor-pointer bg-zinc-800 hover:bg-zinc-700 p-2 rounded transition-colors flex items-center justify-center">
+                                            <Upload size={16} />
+                                            <input
+                                                type="file"
+                                                className="hidden"
+                                                accept="image/*"
+                                                onChange={async (e) => {
+                                                    const file = e.target.files?.[0];
+                                                    if (file) {
+                                                        try {
+                                                            setLoading(true);
+                                                            const url = await handleFileUpload(file, 'media', 'covers');
+                                                            setEditingRelease({ ...editingRelease, cover_url: url, coverUrl: url });
+                                                        } catch (err: any) {
+                                                            alert('Upload error: ' + err.message);
+                                                        } finally {
+                                                            setLoading(false);
+                                                        }
+                                                    }
+                                                }}
+                                            />
+                                        </label>
+                                    </div>
                                 </div>
                             </div>
 
@@ -353,16 +397,42 @@ const AdminPanel = () => {
                                                 }}
                                                 className="flex-1 bg-transparent border-none text-xs focus:ring-0"
                                             />
-                                            <input
-                                                placeholder="Audio URL"
-                                                value={track.audioUrl}
-                                                onChange={e => {
-                                                    const newTracks = [...editingRelease.tracks];
-                                                    newTracks[index].audioUrl = e.target.value;
-                                                    setEditingRelease({ ...editingRelease, tracks: newTracks });
-                                                }}
-                                                className="flex-1 bg-transparent border-none text-xs focus:ring-0"
-                                            />
+                                            <div className="flex-1 flex gap-1">
+                                                <input
+                                                    placeholder="Audio URL"
+                                                    value={track.audioUrl}
+                                                    onChange={e => {
+                                                        const newTracks = [...editingRelease.tracks];
+                                                        newTracks[index].audioUrl = e.target.value;
+                                                        setEditingRelease({ ...editingRelease, tracks: newTracks });
+                                                    }}
+                                                    className="flex-1 bg-transparent border-none text-[10px] focus:ring-0"
+                                                />
+                                                <label className="cursor-pointer text-zinc-500 hover:text-white flex items-center">
+                                                    <Upload size={12} />
+                                                    <input
+                                                        type="file"
+                                                        className="hidden"
+                                                        accept="audio/*"
+                                                        onChange={async (e) => {
+                                                            const file = e.target.files?.[0];
+                                                            if (file) {
+                                                                try {
+                                                                    setLoading(true);
+                                                                    const url = await handleFileUpload(file, 'media', 'tracks');
+                                                                    const newTracks = [...editingRelease.tracks];
+                                                                    newTracks[index].audioUrl = url;
+                                                                    setEditingRelease({ ...editingRelease, tracks: newTracks });
+                                                                } catch (err: any) {
+                                                                    alert('Upload error: ' + err.message);
+                                                                } finally {
+                                                                    setLoading(false);
+                                                                }
+                                                            }
+                                                        }}
+                                                    />
+                                                </label>
+                                            </div>
                                             <input
                                                 placeholder="Duration"
                                                 value={track.duration}
