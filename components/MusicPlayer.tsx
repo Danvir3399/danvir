@@ -11,9 +11,9 @@ interface MusicPlayerProps {
   lang?: 'en' | 'ru';
 }
 
-const MusicPlayer: React.FC<MusicPlayerProps> = ({ 
-  currentTrack, 
-  isPlaying, 
+const MusicPlayer: React.FC<MusicPlayerProps> = ({
+  currentTrack,
+  isPlaying,
   onTogglePlay,
   onNext,
   onPrev,
@@ -25,6 +25,7 @@ const MusicPlayer: React.FC<MusicPlayerProps> = ({
   const [isLoading, setIsLoading] = useState(false);
   const [hasError, setHasError] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
+  const [volume, setVolume] = useState(0.8);
 
   // Effect to handle play/pause and track changes
   useEffect(() => {
@@ -34,7 +35,7 @@ const MusicPlayer: React.FC<MusicPlayerProps> = ({
     if (isPlaying) {
       setIsLoading(true);
       setHasError(false);
-      
+
       const playPromise = audio.play();
       if (playPromise !== undefined) {
         playPromise
@@ -64,7 +65,7 @@ const MusicPlayer: React.FC<MusicPlayerProps> = ({
       if (!isNaN(duration) && duration > 0) {
         setProgress((current / duration) * 100);
       }
-      
+
       const mins = Math.floor(current / 60);
       const secs = Math.floor(current % 60).toString().padStart(2, '0');
       setCurrentTime(`${mins}:${secs}`);
@@ -93,6 +94,21 @@ const MusicPlayer: React.FC<MusicPlayerProps> = ({
     }
   };
 
+  const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newVolume = parseFloat(e.target.value);
+    setVolume(newVolume);
+    if (audioRef.current) {
+      audioRef.current.volume = newVolume;
+      if (newVolume > 0 && isMuted) {
+        audioRef.current.muted = false;
+        setIsMuted(false);
+      } else if (newVolume === 0 && !isMuted) {
+        audioRef.current.muted = true;
+        setIsMuted(true);
+      }
+    }
+  };
+
   if (!currentTrack) return null;
 
   const t = {
@@ -102,8 +118,8 @@ const MusicPlayer: React.FC<MusicPlayerProps> = ({
 
   return (
     <div className="fixed bottom-0 left-0 right-0 z-50 bg-black/95 border-t border-white/10 p-4 md:p-6 flex flex-col gap-3 backdrop-blur-xl">
-      <audio 
-        ref={audioRef} 
+      <audio
+        ref={audioRef}
         src={currentTrack.audioUrl}
         crossOrigin="anonymous"
         preload="auto"
@@ -114,32 +130,32 @@ const MusicPlayer: React.FC<MusicPlayerProps> = ({
         onPlaying={() => setIsLoading(false)}
         onCanPlay={() => setIsLoading(false)}
         onError={(e) => {
-            // Fixed: log type instead of full event to prevent circular structure error
-            console.error("Audio playback error detected:", e.type);
-            setHasError(true);
-            setIsLoading(false);
+          // Fixed: log type instead of full event to prevent circular structure error
+          console.error("Audio playback error detected:", e.type);
+          setHasError(true);
+          setIsLoading(false);
         }}
       />
-      
+
       <div className="flex items-center justify-between max-w-7xl mx-auto w-full gap-4">
         {/* Track Info & Visualizer */}
         <div className="flex items-center gap-4 w-1/3 min-w-0">
           <div className="hidden sm:flex w-12 h-12 bg-zinc-900 border border-white/5 items-center justify-center relative overflow-hidden flex-shrink-0">
-             {isPlaying && !isLoading && !hasError ? (
-               <div className="flex items-end gap-[2px] h-5">
-                 <div className="w-1 bg-white animate-[bounce_1s_infinite_0.1s]"></div>
-                 <div className="w-1 bg-white animate-[bounce_0.8s_infinite_0.3s]"></div>
-                 <div className="w-1 bg-white animate-[bounce_1.2s_infinite_0.5s]"></div>
-               </div>
-             ) : (
-               <i className="fa-solid fa-music text-zinc-800"></i>
-             )}
+            {isPlaying && !isLoading && !hasError ? (
+              <div className="flex items-end gap-[2px] h-5">
+                <div className="w-1 bg-white animate-[bounce_1s_infinite_0.1s]"></div>
+                <div className="w-1 bg-white animate-[bounce_0.8s_infinite_0.3s]"></div>
+                <div className="w-1 bg-white animate-[bounce_1.2s_infinite_0.5s]"></div>
+              </div>
+            ) : (
+              <i className="fa-solid fa-music text-zinc-800"></i>
+            )}
           </div>
           <div className="truncate">
             <h4 className="text-sm font-bold truncate text-white uppercase tracking-[0.1em] flex items-center gap-2">
-                {currentTrack.title}
-                {isLoading && <span className="text-[8px] text-zinc-500 animate-pulse">{t.loading}</span>}
-                {hasError && <span className="text-[8px] text-red-500">{t.error}</span>}
+              {currentTrack.title}
+              {isLoading && <span className="text-[8px] text-zinc-500 animate-pulse">{t.loading}</span>}
+              {hasError && <span className="text-[8px] text-red-500">{t.error}</span>}
             </h4>
             <p className="text-[10px] text-zinc-500 uppercase tracking-widest opacity-60">DANVIR // {currentTrack.duration}</p>
           </div>
@@ -151,16 +167,16 @@ const MusicPlayer: React.FC<MusicPlayerProps> = ({
             <button onClick={onPrev} className="text-zinc-500 hover:text-white transition-all transform active:scale-90">
               <i className="fa-solid fa-step-backward text-xs"></i>
             </button>
-            
-            <button 
-              onClick={onTogglePlay} 
+
+            <button
+              onClick={onTogglePlay}
               className={`group w-14 h-14 rounded-full border border-white/10 flex items-center justify-center transition-all ${isLoading ? 'opacity-50' : 'hover:bg-white hover:border-white text-white hover:text-black hover:scale-105 active:scale-95'}`}
               disabled={isLoading}
             >
               {isLoading ? (
-                  <i className="fa-solid fa-circle-notch fa-spin text-sm text-white"></i>
+                <i className="fa-solid fa-circle-notch fa-spin text-sm text-white"></i>
               ) : (
-                  <i className={`fa-solid ${isPlaying ? 'fa-pause' : 'fa-play'} ${!isPlaying ? 'ml-1' : ''} text-xl transition-colors`}></i>
+                <i className={`fa-solid ${isPlaying ? 'fa-pause' : 'fa-play'} ${!isPlaying ? 'ml-1' : ''} text-xl transition-colors`}></i>
               )}
             </button>
 
@@ -171,11 +187,28 @@ const MusicPlayer: React.FC<MusicPlayerProps> = ({
         </div>
 
         {/* Volume & Time */}
-        <div className="w-1/3 flex justify-end items-center gap-6">
-          <button onClick={toggleMute} className="text-zinc-500 hover:text-white transition-colors group">
-            <i className={`fa-solid ${isMuted ? 'fa-volume-xmark text-red-700' : 'fa-volume-high'} text-sm`}></i>
-          </button>
-          <div className="hidden md:block text-[10px] text-zinc-500 font-mono tracking-widest opacity-50">
+        <div className="w-1/3 flex justify-end items-center gap-4 md:gap-6">
+          <div className="flex items-center gap-3 group/vol">
+            <button onClick={toggleMute} className="text-zinc-500 hover:text-white transition-colors">
+              <i className={`fa-solid ${isMuted || volume === 0 ? 'fa-volume-xmark text-red-700' : volume < 0.5 ? 'fa-volume-low' : 'fa-volume-high'} text-sm`}></i>
+            </button>
+            <div className="relative w-20 h-1 bg-zinc-900 rounded-full overflow-hidden hidden sm:block">
+              <div
+                className="absolute top-0 left-0 h-full bg-white/40 group-hover/vol:bg-white transition-all"
+                style={{ width: `${volume * 100}%` }}
+              ></div>
+              <input
+                type="range"
+                min="0"
+                max="1"
+                step="0.01"
+                value={volume}
+                onChange={handleVolumeChange}
+                className="absolute top-0 left-0 w-full h-full opacity-0 cursor-pointer z-10"
+              />
+            </div>
+          </div>
+          <div className="hidden lg:block text-[10px] text-zinc-500 font-mono tracking-widest opacity-50">
             {currentTime} / {currentTrack.duration}
           </div>
         </div>
@@ -184,14 +217,14 @@ const MusicPlayer: React.FC<MusicPlayerProps> = ({
       {/* Progress Bar Container */}
       <div className="w-full max-w-7xl mx-auto group mt-1">
         <div className="relative h-1 w-full bg-zinc-900/50 rounded-full overflow-hidden">
-          <div 
-            className="absolute top-0 left-0 h-full bg-white/40 group-hover:bg-white transition-all duration-300" 
+          <div
+            className="absolute top-0 left-0 h-full bg-white/40 group-hover:bg-white transition-all duration-300"
             style={{ width: `${progress}%` }}
           ></div>
-          <input 
-            type="range" 
-            min="0" 
-            max="100" 
+          <input
+            type="range"
+            min="0"
+            max="100"
             step="0.1"
             value={progress || 0}
             onChange={handleSeek}
