@@ -213,10 +213,20 @@ const LandingPage: React.FC = () => {
                     <button
                       key={track.id}
                       onClick={() => handlePlayTrack(track, release.id)}
-                      className={`w-full flex justify-between items-center py-2 px-3 text-xs uppercase tracking-widest transition-colors ${currentTrack?.id === track.id ? 'bg-white/10 text-white' : 'text-zinc-500 hover:text-white hover:bg-white/5'}`}
+                      className={`w-full flex justify-between items-center py-2 px-3 text-xs uppercase tracking-widest transition-colors group/track ${currentTrack?.id === track.id ? 'bg-white/10 text-white' : 'text-zinc-500 hover:text-white hover:bg-white/5'}`}
                     >
                       <div className="flex items-center gap-3">
-                        <span className="w-4 text-left opacity-30 italic">{currentTrack?.id === track.id && isPlaying ? <i className="fa-solid fa-volume-high"></i> : ''}</span>
+                        <span className="w-4 flex items-center justify-center">
+                          {currentTrack?.id === track.id ? (
+                            isPlaying ? (
+                              <i className="fa-solid fa-volume-high text-white text-[10px]"></i>
+                            ) : (
+                              <i className="fa-solid fa-play text-white/60 text-[8px]"></i>
+                            )
+                          ) : (
+                            <i className="fa-solid fa-play opacity-20 group-hover/track:opacity-60 text-[8px] transition-opacity"></i>
+                          )}
+                        </span>
                         <span>{track.title}</span>
                       </div>
                       <span className="opacity-40">{track.duration}</span>
