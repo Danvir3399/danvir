@@ -1,8 +1,11 @@
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
+import { Routes, Route } from 'react-router-dom';
 import { RELEASES, SOCIALS, CONTACT_EMAIL, DICT } from './constants';
 import { Track, SocialLink } from './types';
 import MusicPlayer from './components/MusicPlayer';
+import AdminPanel from './components/AdminPanel';
+import { supabase } from './supabase';
 
 const YandexMusicIconSVG = ({ className, style }: { className?: string, style?: React.CSSProperties }) => (
   <svg viewBox="0 0 442 445" className={className} style={style} fill="currentColor" xmlns="http://www.w3.org/2000/svg">
@@ -26,14 +29,41 @@ const SocialIcon = ({ social, className, context }: { social: SocialLink | strin
   return <i className={`${icon} ${className}`}></i>;
 };
 
-const App: React.FC = () => {
+const LandingPage: React.FC = () => {
   const [lang, setLang] = useState<'en' | 'ru'>('ru');
   const [currentTrack, setCurrentTrack] = useState<Track | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [activeReleaseId, setActiveReleaseId] = useState<string | null>(null);
+  const [dynamicReleases, setDynamicReleases] = useState<any[]>([]);
 
   const t = DICT[lang];
-  const releases = useMemo(() => RELEASES(lang), [lang]);
+
+  // Fetch releases from Supabase
+  useEffect(() => {
+    if (!supabase) return;
+
+    const fetchDynamicData = async () => {
+      const { data } = await supabase.from('releases').select('*, tracks(*)').order('year', { ascending: false });
+      if (data && data.length > 0) {
+        // Map DB structure to app types
+        const mapped = data.map(r => ({
+          ...r,
+          coverUrl: r.cover_url, // Map snake_case to camelCase
+          description: lang === 'ru' ? r.description_ru : r.description_en,
+          tracks: r.tracks.sort((a: any, b: any) => a.order_index - b.order_index).map((t: any) => ({
+            ...t,
+            audioUrl: t.audio_url // Map track audio_url too
+          }))
+        }));
+        setDynamicReleases(mapped);
+      }
+    };
+    fetchDynamicData();
+  }, [lang]);
+
+  const releases = useMemo(() => {
+    return dynamicReleases.length > 0 ? dynamicReleases : RELEASES(lang);
+  }, [lang, dynamicReleases]);
 
   const handlePlayTrack = (track: Track, releaseId: string) => {
     if (currentTrack?.id === track.id) {
@@ -87,7 +117,6 @@ const App: React.FC = () => {
             <a href="#contact" onClick={(e) => scrollToSection(e, 'contact')} className="text-white hover:text-zinc-400 transition-colors">{t.contact}</a>
           </div>
 
-          {/* Language Toggle */}
           <div className="flex items-center text-[10px] font-bold tracking-widest text-zinc-600">
             <button
               onClick={() => setLang('en')}
@@ -267,6 +296,15 @@ const App: React.FC = () => {
         lang={lang}
       />
     </div>
+  );
+};
+
+const App: React.FC = () => {
+  return (
+    <Routes>
+      <Route path="/" element={<LandingPage />} />
+      <Route path="/admin" element={<AdminPanel />} />
+    </Routes>
   );
 };
 

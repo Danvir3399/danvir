@@ -1,0 +1,5 @@
+Создано: 2026-01-26 22:43
+
+- В `vite.config.ts` добавлен `envPrefix: ['VITE_', 'NEXT_PUBLIC_']`.
+- В `supabase.ts` добавлена поддержка переменных `NEXT_PUBLIC_SUPABASE_URL` и `NEXT_PUBLIC_SUPABASE_ANON_KEY`.
+- Теперь админка будет работать на Vercel автоматически без изменения старых переменных.
