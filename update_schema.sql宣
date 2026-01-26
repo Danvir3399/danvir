@@ -1,0 +1,3 @@
+-- Добавление колонки links для хранения внешних ссылок (Spotify, Yandex и т.д.)
+ALTER TABLE releases 
+ADD COLUMN IF NOT EXISTS links JSONB DEFAULT '{}'::jsonb;

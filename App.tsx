@@ -48,11 +48,12 @@ const LandingPage: React.FC = () => {
         // Map DB structure to app types
         const mapped = data.map(r => ({
           ...r,
-          coverUrl: r.cover_url, // Map snake_case to camelCase
+          coverUrl: r.cover_url,
           description: lang === 'ru' ? r.description_ru : r.description_en,
+          links: r.links || {}, // Default to empty object if missing
           tracks: r.tracks.sort((a: any, b: any) => a.order_index - b.order_index).map((t: any) => ({
             ...t,
-            audioUrl: t.audio_url // Map track audio_url too
+            audioUrl: t.audio_url
           }))
         }));
         setDynamicReleases(mapped);
@@ -224,13 +225,13 @@ const LandingPage: React.FC = () => {
                 </div>
 
                 <div className="flex gap-4 mt-6 pt-4 border-t border-white/5">
-                  {release.links.spotify && <a href={release.links.spotify} className="text-zinc-600 hover:text-white transition-colors w-4 h-4"><i className="fa-brands fa-spotify"></i></a>}
-                  {release.links.yandexMusic && (
+                  {release.links?.spotify && <a href={release.links.spotify} className="text-zinc-600 hover:text-white transition-colors w-4 h-4"><i className="fa-brands fa-spotify"></i></a>}
+                  {release.links?.yandexMusic && (
                     <a href={release.links.yandexMusic} className="text-zinc-600 hover:text-white transition-colors w-4 h-4 flex items-center justify-center">
                       <YandexMusicIconSVG className="w-full h-full" style={{ transform: 'translateY(20%)' }} />
                     </a>
                   )}
-                  {release.links.soundcloud && <a href={release.links.soundcloud} className="text-zinc-600 hover:text-white transition-colors w-4 h-4"><i className="fa-brands fa-soundcloud"></i></a>}
+                  {release.links?.soundcloud && <a href={release.links.soundcloud} className="text-zinc-600 hover:text-white transition-colors w-4 h-4"><i className="fa-brands fa-soundcloud"></i></a>}
                 </div>
               </div>
             </div>

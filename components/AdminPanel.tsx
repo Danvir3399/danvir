@@ -64,6 +64,7 @@ const AdminPanel = () => {
                 cover_url: releaseData.coverUrl,
                 description_ru: releaseData.description_ru,
                 description_en: releaseData.description_en,
+                links: releaseData.links || {},
             }).eq('id', releaseId);
             if (error) alert(error.message);
         } else {
@@ -74,6 +75,7 @@ const AdminPanel = () => {
                 cover_url: releaseData.coverUrl,
                 description_ru: releaseData.description_ru,
                 description_en: releaseData.description_en,
+                links: releaseData.links || {},
             }).select().single();
             if (error) alert(error.message);
             if (data) releaseId = data.id;
@@ -272,6 +274,39 @@ const AdminPanel = () => {
                                         onChange={e => setEditingRelease({ ...editingRelease, description_en: e.target.value })}
                                         className="w-full bg-black border border-zinc-800 p-2 rounded text-white h-24"
                                     />
+                                </div>
+                            </div>
+
+                            <div className="space-y-4">
+                                <label className="block text-[10px] uppercase tracking-widest text-zinc-500 font-bold">Platform Links</label>
+                                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                    <div>
+                                        <label className="block text-[10px] text-zinc-600 mb-1">Spotify URL</label>
+                                        <input
+                                            type="text"
+                                            value={editingRelease.links?.spotify || ''}
+                                            onChange={e => setEditingRelease({ ...editingRelease, links: { ...editingRelease.links, spotify: e.target.value } })}
+                                            className="w-full bg-black border border-zinc-800 p-2 rounded text-white text-xs"
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="block text-[10px] text-zinc-600 mb-1">Yandex Music URL</label>
+                                        <input
+                                            type="text"
+                                            value={editingRelease.links?.yandexMusic || ''}
+                                            onChange={e => setEditingRelease({ ...editingRelease, links: { ...editingRelease.links, yandexMusic: e.target.value } })}
+                                            className="w-full bg-black border border-zinc-800 p-2 rounded text-white text-xs"
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="block text-[10px] text-zinc-600 mb-1">SoundCloud URL</label>
+                                        <input
+                                            type="text"
+                                            value={editingRelease.links?.soundcloud || ''}
+                                            onChange={e => setEditingRelease({ ...editingRelease, links: { ...editingRelease.links, soundcloud: e.target.value } })}
+                                            className="w-full bg-black border border-zinc-800 p-2 rounded text-white text-xs"
+                                        />
+                                    </div>
                                 </div>
                             </div>
 
