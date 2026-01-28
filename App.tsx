@@ -302,10 +302,9 @@ const LandingPage: React.FC = () => {
 
       {/* Footer */}
       <footer className="max-w-7xl mx-auto px-6 py-10 flex flex-col md:flex-row justify-between items-center text-[10px] uppercase tracking-[0.3em] text-zinc-700 gap-4">
-        <div className="flex flex-col md:flex-row items-center gap-4 text-center md:text-left">
+        <div className="flex flex-col items-center md:items-start gap-2 text-center md:text-left">
           <p>&copy; 2026 DANVIR AUDIO. {t.rights}</p>
-          <span className="hidden md:inline opacity-20">|</span>
-          <p className="opacity-50">Created by Denis Virtiletskii</p>
+          <p className="opacity-40 text-[9px] tracking-[0.2em] font-medium">Created by Denis Virtiletskii</p>
         </div>
         <div className="flex gap-6">
           <a href="#" className="hover:text-zinc-500">{t.terms}</a>
