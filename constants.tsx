@@ -44,7 +44,7 @@ export const RELEASES: (lang: 'en' | 'ru') => Release[] = (lang) => [];
 export const SOCIALS: SocialLink[] = [
   { platform: 'Spotify', url: 'https://open.spotify.com/artist/5GElDhoDb2YoebamMS56wc', icon: 'fa-brands fa-spotify' },
   { platform: 'Apple Music', url: 'https://music.apple.com/us/artist/danvir/1849599425', icon: 'fa-brands fa-apple' },
-  { platform: 'Yandex Music', url: 'https://music.yandex.ru', icon: 'yandex-music' }
+  { platform: 'Yandex Music', url: 'https://music.yandex.ru/artist/25334390', icon: 'yandex-music' }
 ];
 
 export const CONTACT_EMAIL = 'info@danvir.ru';
