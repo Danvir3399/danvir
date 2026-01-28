@@ -305,7 +305,7 @@ const LandingPage: React.FC = () => {
         <div className="flex flex-col md:flex-row items-center gap-4 text-center md:text-left">
           <p>&copy; 2026 DANVIR AUDIO. {t.rights}</p>
           <span className="hidden md:inline opacity-20">|</span>
-          <p className="opacity-50">Powered by Denis Virtiletskii</p>
+          <p className="opacity-50">Created by Denis Virtiletskii</p>
         </div>
         <div className="flex gap-6">
           <a href="#" className="hover:text-zinc-500">{t.terms}</a>
