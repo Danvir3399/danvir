@@ -36,6 +36,7 @@ const LandingPage: React.FC = () => {
   const [activeReleaseId, setActiveReleaseId] = useState<string | null>(null);
   const [dynamicReleases, setDynamicReleases] = useState<any[]>([]);
   const [dynamicSocials, setDynamicSocials] = useState<SocialLink[]>([]);
+  const [isInitialLoading, setIsInitialLoading] = useState(true);
 
   const t = DICT[lang];
 
@@ -64,6 +65,7 @@ const LandingPage: React.FC = () => {
       if (socialsData && socialsData.length > 0) {
         setDynamicSocials(socialsData);
       }
+      setIsInitialLoading(false);
     };
     fetchDynamicData();
   }, [lang]);
@@ -115,6 +117,17 @@ const LandingPage: React.FC = () => {
       element.scrollIntoView({ behavior: 'smooth' });
     }
   };
+
+  if (isInitialLoading) {
+    return (
+      <div className="fixed inset-0 bg-[#050505] flex items-center justify-center z-[100]">
+        <div className="flex flex-col items-center gap-4">
+          <div className="w-12 h-12 border-t-2 border-white/20 border-t-white rounded-full animate-spin"></div>
+          <span className="text-[10px] uppercase tracking-[0.4em] text-zinc-500 animate-pulse">{t.loading}</span>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen pb-32 bg-[#050505]">
