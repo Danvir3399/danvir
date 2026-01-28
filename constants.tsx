@@ -99,10 +99,10 @@ export const RELEASES: (lang: 'en' | 'ru') => Release[] = (lang) => [
 ];
 
 export const SOCIALS: SocialLink[] = [
-  { platform: 'Spotify', url: 'https://spotify.com', icon: 'fa-brands fa-spotify' },
+  { platform: 'Spotify', url: 'https://open.spotify.com/artist/5GElDhoDb2YoebamMS56wc', icon: 'fa-brands fa-spotify' },
+  { platform: 'Apple Music', url: 'https://music.apple.com/us/artist/danvir/1849599425', icon: 'fa-brands fa-apple' },
   { platform: 'SoundCloud', url: 'https://soundcloud.com', icon: 'fa-brands fa-soundcloud' },
   { platform: 'Yandex Music', url: 'https://music.yandex.ru', icon: 'yandex-music' },
-  { platform: 'Instagram', url: 'https://instagram.com', icon: 'fa-brands fa-instagram' },
   { platform: 'YouTube', url: 'https://youtube.com', icon: 'fa-brands fa-youtube' }
 ];
 

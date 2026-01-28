@@ -35,6 +35,7 @@ const LandingPage: React.FC = () => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [activeReleaseId, setActiveReleaseId] = useState<string | null>(null);
   const [dynamicReleases, setDynamicReleases] = useState<any[]>([]);
+  const [dynamicSocials, setDynamicSocials] = useState<SocialLink[]>([]);
 
   const t = DICT[lang];
 
@@ -58,6 +59,11 @@ const LandingPage: React.FC = () => {
         }));
         setDynamicReleases(mapped);
       }
+
+      const { data: socialsData } = await supabase.from('socials').select('*').order('order_index');
+      if (socialsData && socialsData.length > 0) {
+        setDynamicSocials(socialsData);
+      }
     };
     fetchDynamicData();
   }, [lang]);
@@ -65,6 +71,10 @@ const LandingPage: React.FC = () => {
   const releases = useMemo(() => {
     return dynamicReleases.length > 0 ? dynamicReleases : RELEASES(lang);
   }, [lang, dynamicReleases]);
+
+  const socials = useMemo(() => {
+    return dynamicSocials.length > 0 ? dynamicSocials : SOCIALS;
+  }, [dynamicSocials]);
 
   const handlePlayTrack = (track: Track, releaseId: string) => {
     if (currentTrack?.id === track.id) {
@@ -144,7 +154,7 @@ const LandingPage: React.FC = () => {
             DANVIR
           </h2>
           <div className="flex justify-center gap-6 pt-10">
-            {SOCIALS.map(social => (
+            {socials.map(social => (
               <a
                 key={social.platform}
                 href={social.url}
@@ -272,7 +282,7 @@ const LandingPage: React.FC = () => {
             <div className="space-y-6">
               <p className="text-xs uppercase tracking-[0.4em] text-zinc-600 font-bold">{t.follow}</p>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {SOCIALS.map(social => (
+                {socials.map(social => (
                   <a
                     key={social.platform}
                     href={social.url}
