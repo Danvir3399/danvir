@@ -40,8 +40,12 @@ const getInitialLang = (): 'en' | 'ru' => {
   return isCis ? 'ru' : 'en';
 };
 
-const LandingPage: React.FC = () => {
-  const [lang, setLang] = useState<'en' | 'ru'>(getInitialLang);
+interface LandingPageProps {
+  lang: 'en' | 'ru';
+  setLang: (lang: 'en' | 'ru') => void;
+}
+
+const LandingPage: React.FC<LandingPageProps> = ({ lang, setLang }) => {
   const [currentTrack, setCurrentTrack] = useState<Track | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [activeReleaseId, setActiveReleaseId] = useState<string | null>(null);
@@ -158,18 +162,12 @@ const LandingPage: React.FC = () => {
 
           <div className="flex items-center text-[10px] font-bold tracking-widest text-zinc-600">
             <button
-              onClick={() => {
-                setLang('en');
-                localStorage.setItem('danvir_lang', 'en');
-              }}
+              onClick={() => setLang('en')}
               className={`hover:text-white transition-colors ${lang === 'en' ? 'text-white' : ''}`}
             >EN</button>
             <span className="mx-2 opacity-20">/</span>
             <button
-              onClick={() => {
-                setLang('ru');
-                localStorage.setItem('danvir_lang', 'ru');
-              }}
+              onClick={() => setLang('ru')}
               className={`hover:text-white transition-colors ${lang === 'ru' ? 'text-white' : ''}`}
             >RU</button>
           </div>
@@ -375,12 +373,18 @@ const LandingPage: React.FC = () => {
 };
 
 const App: React.FC = () => {
+  const [lang, setLang] = useState<'en' | 'ru'>(getInitialLang);
+
+  useEffect(() => {
+    localStorage.setItem('danvir_lang', lang);
+  }, [lang]);
+
   return (
     <Routes>
-      <Route path="/" element={<LandingPage />} />
+      <Route path="/" element={<LandingPage lang={lang} setLang={setLang} />} />
       <Route path="/admin" element={<AdminPanel />} />
-      <Route path="/terms" element={<LegalPages type="terms" lang={getInitialLang()} />} />
-      <Route path="/privacy" element={<LegalPages type="privacy" lang={getInitialLang()} />} />
+      <Route path="/terms" element={<LegalPages type="terms" lang={lang} />} />
+      <Route path="/privacy" element={<LegalPages type="privacy" lang={lang} />} />
     </Routes>
   );
 };
