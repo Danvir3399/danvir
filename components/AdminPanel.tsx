@@ -35,8 +35,7 @@ const AdminPanel = () => {
         const { data, error } = await supabase
             .from('releases')
             .select('*, tracks(*)')
-            .order('is_upcoming', { ascending: false })
-            .order('year', { ascending: false });
+            .order('order_index', { ascending: true });
 
         if (data) {
             const mapped = data.map((r: any) => ({
@@ -93,11 +92,12 @@ const AdminPanel = () => {
                 title: releaseData.title,
                 year: releaseData.year,
                 type: releaseData.type,
-                cover_url: releaseData.coverUrl,
+                cover_url: releaseData.coverUrl || releaseData.cover_url,
                 description_ru: releaseData.description_ru,
                 description_en: releaseData.description_en,
                 links: releaseData.links || {},
                 is_upcoming: releaseData.isUpcoming,
+                order_index: releaseData.order_index ?? 0
             }).eq('id', releaseId);
             if (error) alert(error.message);
         } else {
@@ -105,11 +105,12 @@ const AdminPanel = () => {
                 title: releaseData.title,
                 year: releaseData.year,
                 type: releaseData.type,
-                cover_url: releaseData.coverUrl,
+                cover_url: releaseData.coverUrl || releaseData.cover_url,
                 description_ru: releaseData.description_ru,
                 description_en: releaseData.description_en,
                 links: releaseData.links || {},
                 is_upcoming: releaseData.isUpcoming,
+                order_index: releases.length
             }).select().single();
             if (error) alert(error.message);
             if (data) releaseId = data.id;
@@ -220,8 +221,47 @@ const AdminPanel = () => {
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 items-start">
-                    {releases.map((release) => (
-                        <div key={release.id} className="bg-zinc-900/30 border border-zinc-800 rounded-xl p-4 group hover:border-zinc-600 transition-all">
+                    {releases.map((release, index) => (
+                        <div
+                            key={release.id}
+                            draggable
+                            onDragStart={(e) => {
+                                e.dataTransfer.setData('releaseIndex', index.toString());
+                                e.currentTarget.classList.add('opacity-50');
+                            }}
+                            onDragEnd={(e) => e.currentTarget.classList.remove('opacity-50')}
+                            onDragOver={(e) => e.preventDefault()}
+                            onDrop={async (e) => {
+                                e.preventDefault();
+                                const fromIndex = parseInt(e.dataTransfer.getData('releaseIndex'));
+                                const toIndex = index;
+                                if (fromIndex === toIndex) return;
+
+                                const newReleases = [...releases];
+                                const [movedRelease] = newReleases.splice(fromIndex, 1);
+                                newReleases.splice(toIndex, 0, movedRelease);
+
+                                // Local update for immediate feedback
+                                setReleases(newReleases);
+
+                                // Update all indices in DB
+                                const updates = newReleases.map((r, i) => ({
+                                    id: r.id,
+                                    order_index: i
+                                }));
+
+                                for (const update of updates) {
+                                    await supabase
+                                        .from('releases')
+                                        .update({ order_index: update.order_index })
+                                        .eq('id', update.id);
+                                }
+                            }}
+                            className="bg-zinc-900/30 border border-zinc-800 rounded-xl p-4 group hover:border-zinc-600 transition-all relative cursor-move"
+                        >
+                            <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                <GripVertical size={16} className="text-zinc-600" />
+                            </div>
                             <div className="aspect-square bg-zinc-800 rounded-lg mb-4 overflow-hidden relative">
                                 <img src={release.coverUrl || release.cover_url} alt={release.title} className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500" />
                             </div>

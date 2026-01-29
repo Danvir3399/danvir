@@ -59,8 +59,7 @@ const LandingPage: React.FC = () => {
       const { data } = await supabase
         .from('releases')
         .select('*, tracks(*)')
-        .order('is_upcoming', { ascending: false })
-        .order('year', { ascending: false });
+        .order('order_index', { ascending: true });
       if (data && data.length > 0) {
         // Map DB structure to app types
         const mapped = data.map(r => ({
