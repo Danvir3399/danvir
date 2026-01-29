@@ -23,7 +23,7 @@ const SocialIcon = ({ social, className, context }: { social: SocialLink | strin
   if (icon === 'yandex-music') {
     let style: React.CSSProperties = {};
     if (context === 'hero') style = { transform: 'scale(0.65) translateY(-20%)' };
-    else if (context === 'music') style = { transform: 'translateY(20%)' };
+    else if (context === 'music') style = { transform: 'translateY(35%)' };
 
     return <YandexMusicIconSVG className={className} style={style} />;
   }
@@ -283,8 +283,8 @@ const LandingPage: React.FC = () => {
                   {release.links?.spotify && <a href={release.links.spotify} target="_blank" rel="noreferrer" className="text-zinc-600 hover:text-white transition-colors w-4 h-4"><i className="fa-brands fa-spotify"></i></a>}
                   {release.links?.appleMusic && <a href={release.links.appleMusic} target="_blank" rel="noreferrer" className="text-zinc-600 hover:text-white transition-colors w-4 h-4"><i className="fa-brands fa-apple"></i></a>}
                   {release.links?.yandexMusic && (
-                    <a href={release.links.yandexMusic} target="_blank" rel="noreferrer" className="text-zinc-600 hover:text-white transition-colors w-4 h-4 flex items-center justify-center">
-                      <YandexMusicIconSVG className="w-full h-full" style={{ transform: 'translateY(20%)' }} />
+                    <a href={release.links.yandexMusic} target="_blank" rel="noreferrer" className="text-zinc-600 hover:text-white transition-colors w-4 h-4 flex items-center justify-center" title="Yandex Music">
+                      <SocialIcon social="yandex-music" className="w-full h-full" context="music" />
                     </a>
                   )}
                   {release.links?.soundcloud && <a href={release.links.soundcloud} target="_blank" rel="noreferrer" className="text-zinc-600 hover:text-white transition-colors w-4 h-4"><i className="fa-brands fa-soundcloud"></i></a>}
