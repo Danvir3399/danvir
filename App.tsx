@@ -1,10 +1,11 @@
 
 import React, { useState, useMemo, useEffect } from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, Link } from 'react-router-dom';
 import { RELEASES, SOCIALS, CONTACT_EMAIL, DICT } from './constants';
 import { Track, SocialLink } from './types';
 import MusicPlayer from './components/MusicPlayer';
 import AdminPanel from './components/AdminPanel';
+import LegalPages from './components/LegalPages';
 import { supabase } from './supabase';
 
 const YandexMusicIconSVG = ({ className, style }: { className?: string, style?: React.CSSProperties }) => (
@@ -29,17 +30,18 @@ const SocialIcon = ({ social, className, context }: { social: SocialLink | strin
   return <i className={`${icon} ${className}`}></i>;
 };
 
-const LandingPage: React.FC = () => {
-  const [lang, setLang] = useState<'en' | 'ru'>(() => {
-    const saved = localStorage.getItem('danvir_lang') as 'en' | 'ru' | null;
-    if (saved) return saved;
+const getInitialLang = (): 'en' | 'ru' => {
+  const saved = localStorage.getItem('danvir_lang') as 'en' | 'ru' | null;
+  if (saved) return saved;
 
-    // Auto-detect browser language
-    const browserLang = navigator.language.toLowerCase();
-    const cisLangs = ['ru', 'be', 'kk', 'uz', 'hy', 'az', 'ky', 'mo', 'tg'];
-    const isCis = cisLangs.some(l => browserLang.startsWith(l));
-    return isCis ? 'ru' : 'en';
-  });
+  const browserLang = navigator.language.toLowerCase();
+  const cisLangs = ['ru', 'be', 'kk', 'uz', 'hy', 'az', 'ky', 'mo', 'tg'];
+  const isCis = cisLangs.some(l => browserLang.startsWith(l));
+  return isCis ? 'ru' : 'en';
+};
+
+const LandingPage: React.FC = () => {
+  const [lang, setLang] = useState<'en' | 'ru'>(getInitialLang);
   const [currentTrack, setCurrentTrack] = useState<Track | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [activeReleaseId, setActiveReleaseId] = useState<string | null>(null);
@@ -340,8 +342,8 @@ const LandingPage: React.FC = () => {
           <p className="opacity-60 text-[9px] tracking-[0.2em] font-medium">Created by Denis Virtiletskii</p>
         </div>
         <div className="flex gap-6">
-          <a href="#" className="hover:text-zinc-500">{t.terms}</a>
-          <a href="#" className="hover:text-zinc-500">{t.privacy}</a>
+          <Link to="/terms" className="hover:text-white transition-colors">{t.terms}</Link>
+          <Link to="/privacy" className="hover:text-white transition-colors">{t.privacy}</Link>
         </div>
       </footer>
 
@@ -363,6 +365,8 @@ const App: React.FC = () => {
     <Routes>
       <Route path="/" element={<LandingPage />} />
       <Route path="/admin" element={<AdminPanel />} />
+      <Route path="/terms" element={<LegalPages type="terms" lang={getInitialLang()} />} />
+      <Route path="/privacy" element={<LegalPages type="privacy" lang={getInitialLang()} />} />
     </Routes>
   );
 };
