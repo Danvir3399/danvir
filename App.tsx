@@ -30,7 +30,16 @@ const SocialIcon = ({ social, className, context }: { social: SocialLink | strin
 };
 
 const LandingPage: React.FC = () => {
-  const [lang, setLang] = useState<'en' | 'ru'>('ru');
+  const [lang, setLang] = useState<'en' | 'ru'>(() => {
+    const saved = localStorage.getItem('danvir_lang') as 'en' | 'ru' | null;
+    if (saved) return saved;
+
+    // Auto-detect browser language
+    const browserLang = navigator.language.toLowerCase();
+    const cisLangs = ['ru', 'be', 'kk', 'uz', 'hy', 'az', 'ky', 'mo', 'tg'];
+    const isCis = cisLangs.some(l => browserLang.startsWith(l));
+    return isCis ? 'ru' : 'en';
+  });
   const [currentTrack, setCurrentTrack] = useState<Track | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [activeReleaseId, setActiveReleaseId] = useState<string | null>(null);
@@ -143,12 +152,18 @@ const LandingPage: React.FC = () => {
 
           <div className="flex items-center text-[10px] font-bold tracking-widest text-zinc-600">
             <button
-              onClick={() => setLang('en')}
+              onClick={() => {
+                setLang('en');
+                localStorage.setItem('danvir_lang', 'en');
+              }}
               className={`hover:text-white transition-colors ${lang === 'en' ? 'text-white' : ''}`}
             >EN</button>
             <span className="mx-2 opacity-20">/</span>
             <button
-              onClick={() => setLang('ru')}
+              onClick={() => {
+                setLang('ru');
+                localStorage.setItem('danvir_lang', 'ru');
+              }}
               className={`hover:text-white transition-colors ${lang === 'ru' ? 'text-white' : ''}`}
             >RU</button>
           </div>
