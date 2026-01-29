@@ -242,12 +242,12 @@ const LandingPage: React.FC = () => {
                     </button>
                   )}
                 </div>
-                <div className="absolute top-4 left-4 flex gap-2">
-                  <span className="px-2 py-1 bg-black/60 text-[10px] uppercase tracking-widest text-white border border-white/10">
+                <div className="absolute top-4 left-4 flex gap-2 items-stretch">
+                  <span className="flex items-center px-2 py-0.5 bg-black/60 text-[10px] uppercase tracking-widest text-white border border-white/10 leading-none">
                     {release.type} • {release.year}
                   </span>
                   {release.isUpcoming && (
-                    <span className="px-2 py-1 bg-white text-black text-[10px] font-bold uppercase tracking-widest animate-pulse">
+                    <span className="flex items-center px-2 py-0.5 bg-white text-black text-[10px] font-bold uppercase tracking-widest animate-pulse border border-transparent leading-none">
                       {t.soon}
                     </span>
                   )}
