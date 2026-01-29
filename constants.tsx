@@ -17,7 +17,9 @@ export const DICT = {
     terms: 'Terms',
     privacy: 'Privacy',
     loading: 'Loading...',
-    error: 'Playback Error'
+    error: 'Playback Error',
+    soon: 'SOON',
+    comingSoon: 'COMING SOON'
   },
   ru: {
     music: 'Музыка',
@@ -34,7 +36,9 @@ export const DICT = {
     terms: 'Условия',
     privacy: 'Приватность',
     loading: 'Загрузка...',
-    error: 'Ошибка загрузки'
+    error: 'Ошибка загрузки',
+    soon: 'СКОРО',
+    comingSoon: 'СКОРО В ЭФИРЕ'
   }
 };
 

@@ -85,6 +85,7 @@ const AdminPanel = () => {
                 description_ru: releaseData.description_ru,
                 description_en: releaseData.description_en,
                 links: releaseData.links || {},
+                is_upcoming: releaseData.isUpcoming,
             }).eq('id', releaseId);
             if (error) alert(error.message);
         } else {
@@ -96,6 +97,7 @@ const AdminPanel = () => {
                 description_ru: releaseData.description_ru,
                 description_en: releaseData.description_en,
                 links: releaseData.links || {},
+                is_upcoming: releaseData.isUpcoming,
             }).select().single();
             if (error) alert(error.message);
             if (data) releaseId = data.id;
@@ -282,6 +284,23 @@ const AdminPanel = () => {
                                         <option value="Single">Single</option>
                                     </select>
                                 </div>
+                                <div className="flex items-end pb-1">
+                                    <label className="flex items-center gap-3 cursor-pointer group">
+                                        <div className="relative">
+                                            <input
+                                                type="checkbox"
+                                                className="sr-only peer"
+                                                checked={editingRelease.isUpcoming || false}
+                                                onChange={e => setEditingRelease({ ...editingRelease, isUpcoming: e.target.checked })}
+                                            />
+                                            <div className="w-10 h-5 bg-zinc-800 rounded-full peer peer-checked:bg-white transition-colors"></div>
+                                            <div className="absolute left-1 top-1 w-3 h-3 bg-zinc-500 rounded-full peer-checked:translate-x-5 peer-checked:bg-black transition-all"></div>
+                                        </div>
+                                        <span className="text-[10px] uppercase tracking-widest text-zinc-500 font-bold group-hover:text-white transition-colors">Coming Soon (СКОРО)</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div className="grid grid-cols-1 gap-4">
                                 <div>
                                     <label className="block text-[10px] uppercase tracking-widest text-zinc-500 mb-2 font-bold">Cover URL / Upload</label>
                                     <div className="flex gap-2">

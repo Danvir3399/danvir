@@ -18,8 +18,10 @@ export interface Release {
     appleMusic?: string;
     yandexMusic?: string;
     soundcloud?: string;
+    youtubeMusic?: string;
   };
   tracks: Track[];
+  isUpcoming?: boolean;
 }
 
 export interface SocialLink {

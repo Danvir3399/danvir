@@ -23,7 +23,7 @@ const SocialIcon = ({ social, className, context }: { social: SocialLink | strin
   if (icon === 'yandex-music') {
     let style: React.CSSProperties = {};
     if (context === 'hero') style = { transform: 'scale(0.65) translateY(-20%)' };
-    else if (context === 'music') style = { transform: 'translateY(35%)' };
+    else if (context === 'music') style = { transform: 'translateY(28%)' };
 
     return <YandexMusicIconSVG className={className} style={style} />;
   }
@@ -64,6 +64,7 @@ const LandingPage: React.FC = () => {
           coverUrl: r.cover_url,
           description: lang === 'ru' ? r.description_ru : r.description_en,
           links: r.links || {}, // Default to empty object if missing
+          isUpcoming: r.is_upcoming,
           tracks: r.tracks.sort((a: any, b: any) => a.order_index - b.order_index).map((t: any) => ({
             ...t,
             audioUrl: t.audio_url
@@ -232,17 +233,24 @@ const LandingPage: React.FC = () => {
                   loading="lazy"
                 />
                 <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                  <button
-                    onClick={() => handlePlayTrack(release.tracks[0], release.id)}
-                    className="w-16 h-16 rounded-full bg-white text-black flex items-center justify-center transform translate-y-4 group-hover:translate-y-0 transition-all duration-300"
-                  >
-                    <i className={`fa-solid ${isPlaying && activeReleaseId === release.id ? 'fa-pause' : 'fa-play'} text-xl`}></i>
-                  </button>
+                  {!release.isUpcoming && (
+                    <button
+                      onClick={() => handlePlayTrack(release.tracks[0], release.id)}
+                      className="w-16 h-16 rounded-full bg-white text-black flex items-center justify-center transform translate-y-4 group-hover:translate-y-0 transition-all duration-300"
+                    >
+                      <i className={`fa-solid ${isPlaying && activeReleaseId === release.id ? 'fa-pause' : 'fa-play'} text-xl`}></i>
+                    </button>
+                  )}
                 </div>
-                <div className="absolute top-4 left-4">
+                <div className="absolute top-4 left-4 flex gap-2">
                   <span className="px-2 py-1 bg-black/60 text-[10px] uppercase tracking-widest text-white border border-white/10">
                     {release.type} • {release.year}
                   </span>
+                  {release.isUpcoming && (
+                    <span className="px-2 py-1 bg-white text-black text-[10px] font-bold uppercase tracking-widest animate-pulse">
+                      {t.soon}
+                    </span>
+                  )}
                 </div>
               </div>
 
@@ -257,12 +265,15 @@ const LandingPage: React.FC = () => {
                   {release.tracks.map((track) => (
                     <button
                       key={track.id}
-                      onClick={() => handlePlayTrack(track, release.id)}
-                      className={`w-full flex justify-between items-center py-2 px-3 text-xs uppercase tracking-widest transition-colors group/track ${currentTrack?.id === track.id ? 'bg-white/10 text-white' : 'text-zinc-500 hover:text-white hover:bg-white/5'}`}
+                      onClick={() => !release.isUpcoming && handlePlayTrack(track, release.id)}
+                      disabled={release.isUpcoming}
+                      className={`w-full flex justify-between items-center py-2 px-3 text-xs uppercase tracking-widest transition-colors group/track ${currentTrack?.id === track.id ? 'bg-white/10 text-white' : release.isUpcoming ? 'text-zinc-700 cursor-default' : 'text-zinc-500 hover:text-white hover:bg-white/5'}`}
                     >
                       <div className="flex items-center gap-3">
                         <span className="w-4 flex items-center justify-center">
-                          {currentTrack?.id === track.id ? (
+                          {release.isUpcoming ? (
+                            <i className="fa-solid fa-clock opacity-20 text-[10px]"></i>
+                          ) : currentTrack?.id === track.id ? (
                             isPlaying ? (
                               <i className="fa-solid fa-volume-high text-white text-[10px]"></i>
                             ) : (
@@ -274,7 +285,7 @@ const LandingPage: React.FC = () => {
                         </span>
                         <span>{track.title}</span>
                       </div>
-                      <span className="opacity-40">{track.duration}</span>
+                      <span className="opacity-40">{release.isUpcoming ? t.soon : track.duration}</span>
                     </button>
                   ))}
                 </div>
