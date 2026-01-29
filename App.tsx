@@ -197,9 +197,14 @@ const LandingPage: React.FC = () => {
           </div>
         </div>
 
-        <div className="absolute bottom-10 left-1/2 -translate-x-1/2 opacity-30">
-          <i className="fa-solid fa-chevron-down text-zinc-100"></i>
-        </div>
+        <a
+          href="#music"
+          onClick={(e) => scrollToSection(e, 'music')}
+          className="absolute bottom-10 left-1/2 -translate-x-1/2 opacity-30 hover:opacity-100 transition-opacity cursor-pointer group"
+          title={t.music}
+        >
+          <i className="fa-solid fa-chevron-down text-zinc-100 group-hover:translate-y-1 transition-transform"></i>
+        </a>
       </section>
 
       {/* Music Section */}
