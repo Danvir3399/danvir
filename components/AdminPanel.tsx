@@ -35,6 +35,7 @@ const AdminPanel = () => {
         const { data, error } = await supabase
             .from('releases')
             .select('*, tracks(*)')
+            .order('is_upcoming', { ascending: false })
             .order('year', { ascending: false });
 
         if (data) setReleases(data as any);
@@ -207,7 +208,7 @@ const AdminPanel = () => {
                     </div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 items-start">
                     {releases.map((release) => (
                         <div key={release.id} className="bg-zinc-900/30 border border-zinc-800 rounded-xl p-4 group hover:border-zinc-600 transition-all">
                             <div className="aspect-square bg-zinc-800 rounded-lg mb-4 overflow-hidden relative">
@@ -419,8 +420,29 @@ const AdminPanel = () => {
                                 </div>
                                 <div className="space-y-2">
                                     {editingRelease.tracks?.map((track: any, index: number) => (
-                                        <div key={index} className="flex gap-2 items-center bg-black/40 p-2 rounded border border-zinc-800/50">
-                                            <GripVertical size={14} className="text-zinc-700" />
+                                        <div
+                                            key={index}
+                                            draggable
+                                            onDragStart={(e) => {
+                                                e.dataTransfer.setData('trackIndex', index.toString());
+                                                e.currentTarget.classList.add('opacity-50');
+                                            }}
+                                            onDragEnd={(e) => e.currentTarget.classList.remove('opacity-50')}
+                                            onDragOver={(e) => e.preventDefault()}
+                                            onDrop={(e) => {
+                                                e.preventDefault();
+                                                const fromIndex = parseInt(e.dataTransfer.getData('trackIndex'));
+                                                const toIndex = index;
+                                                if (fromIndex === toIndex) return;
+
+                                                const newTracks = [...editingRelease.tracks];
+                                                const [movedTrack] = newTracks.splice(fromIndex, 1);
+                                                newTracks.splice(toIndex, 0, movedTrack);
+                                                setEditingRelease({ ...editingRelease, tracks: newTracks });
+                                            }}
+                                            className="flex gap-2 items-center bg-black/40 p-2 rounded border border-zinc-800/50 cursor-move group/track-row hover:border-zinc-700 transition-colors"
+                                        >
+                                            <GripVertical size={14} className="text-zinc-700 group-hover/track-row:text-zinc-400" />
                                             <input
                                                 placeholder="Title"
                                                 value={track.title}

@@ -56,7 +56,11 @@ const LandingPage: React.FC = () => {
     if (!supabase) return;
 
     const fetchDynamicData = async () => {
-      const { data } = await supabase.from('releases').select('*, tracks(*)').order('year', { ascending: false });
+      const { data } = await supabase
+        .from('releases')
+        .select('*, tracks(*)')
+        .order('is_upcoming', { ascending: false })
+        .order('year', { ascending: false });
       if (data && data.length > 0) {
         // Map DB structure to app types
         const mapped = data.map(r => ({
