@@ -217,7 +217,22 @@ const AdminPanel = () => {
                                     <p className="text-zinc-500 text-xs tracking-widest uppercase">{release.year} • {release.type}</p>
                                 </div>
                                 <div className="flex gap-2">
-                                    <button onClick={() => setEditingRelease(release)} className="p-2 text-zinc-500 hover:text-white bg-black/50 rounded-lg"><ExternalLink size={16} /></button>
+                                    <button
+                                        onClick={() => {
+                                            const formattedRelease = {
+                                                ...release,
+                                                coverUrl: release.cover_url,
+                                                tracks: (release.tracks || []).map((t: any) => ({
+                                                    ...t,
+                                                    audioUrl: t.audio_url
+                                                }))
+                                            };
+                                            setEditingRelease(formattedRelease);
+                                        }}
+                                        className="p-2 text-zinc-500 hover:text-white bg-black/50 rounded-lg"
+                                    >
+                                        <ExternalLink size={16} />
+                                    </button>
                                     <button onClick={() => handleDeleteRelease(release.id)} className="p-2 text-zinc-500 hover:text-red-500 bg-black/50 rounded-lg"><Trash2 size={16} /></button>
                                 </div>
                             </div>
